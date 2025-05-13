@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LalaLand | Whimsical Shopping</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* === Cosmic Styles === */
+    :root {
+      --primary: #ff6b6b;
+      --secondary: #6c63ff;
+      --accent: #ffcc5c;
+      --light: #fff5f5;
+      --dark: #1a1a2e;
+      --text: #333;
+      --bg: var(--light);
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --rand-sign: "R";
+    }
+
+    [data-theme="dark"] {
+      --bg: var(--dark);
+      --text: #f0f0f0;
+      --card-bg: rgba(30, 30, 46, 0.9);
+    }
+
+    /* === Base Styles === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: var(--transition);
+    }
+
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      background: rgba(255, 107, 107, 0.9);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: white;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .cart-count {
+      background: white;
+      color: var(--primary);
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      margin-left: 0.3rem;
+    }
+
+    /* === Theme Toggle === */
+    .theme-toggle {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-left: 1rem;
+    }
+
+    /* === Hero Section === */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 5%;
+      position: relative;
+      overflow: hidden;
+      margin-top: 80px;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.5rem;
+      max-width: 700px;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    /* === Products === */
+    .products {
+      padding: 5rem 5%;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .product-image {
+      height: 250px;
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image img {
+      transform: scale(1.1);
+    }
+
+    .product-content {
+      padding: 1.5rem;
+    }
+
+    .product-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-price::before {
+      content: var(--rand-sign);
+    }
+
+    .product-price {
+      font-size: 1.2rem;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .add-to-cart {
+      width: 100%;
+      padding: 0.8rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .add-to-cart:hover {
+      background: var(--secondary);
+      transform: translateY(-3px);
+    }
+
+    /* === Button Styles === */
+    .btn {
+      padding: 1rem 2rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .navbar {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      
+      .nav-links {
+        margin-top: 1rem;
+      }
+      
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Lala<span>Land</span></div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Shop</a>
+      <a href="cart.html">Cart <span class="cart-count" id="cart-count">0</span></a>
+      <button class="theme-toggle" id="theme-toggle">🌙</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to LalaLand</h1>
+    <p>Your one-stop shop for magical treasures</p>
+    <button class="btn" id="shop-now">Shop Now</button>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products">
+    <h2 class="section-title">Featured Products</h2>
+    <div class="product-grid">
+      <!-- Product 1 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea" alt="Unicorn Plush">
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Magical Unicorn Plush</h3>
+          <div class="product-price">499.99</div>
+          <button class="add-to-cart" data-id="1" data-name="Magical Unicorn Plush" data-price="499.99">
+            <i class="fas fa-cart-plus"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1596464716127-f2a82984de30" alt="Rainbow Notebook">
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Rainbow Dream Journal</h3>
+          <div class="product-price">249.99</div>
+          <button class="add-to-cart" data-id="2" data-name="Rainbow Dream Journal" data-price="249.99">
+            <i class="fas fa-cart-plus"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91" alt="Starry Night Lamp">
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Starry Night Projector</h3>
+          <div class="product-price">699.99</div>
+          <button class="add-to-cart" data-id="3" data-name="Starry Night Projector" data-price="699.99">
+            <i class="fas fa-cart-plus"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // === Shopping Cart Functionality ===
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // Update cart count
+    function updateCartCount() {
+      const count = cart.reduce((total, item) => total + item.quantity, 0);
+      document.getElementById('cart-count').textContent = count;
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+    
+    // Add to cart
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const name = this.dataset.name;
+        const price = parseFloat(this.dataset.price);
+        
+        // Check if item already in cart
+        const existingItem = cart.find(item => item.id === id);
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({
+            id,
+            name,
+            price,
+            quantity: 1
+          });
+        }
+        
+        updateCartCount();
+        
+        // Animation
+        this.innerHTML = '<i class="fas fa-check"></i> Added!';
+        setTimeout(() => {
+          this.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+        }, 1000);
+      });
+    });
+    
+    // Initialize cart count
+    updateCartCount();
+    
+    // === Theme Toggle ===
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+      localStorage.setItem('theme', newTheme);
+    });
+    
+    // Initialize theme
+    if (localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', localStorage.getItem('theme'));
+      themeToggle.textContent = localStorage.getItem('theme') === 'light' ? '🌙' : '☀️';
+    }
+    
+    // === Shop Now Button ===
+    document.getElementById('shop-now').addEventListener('click', () => {
+      document.querySelector('.products').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+</html>
